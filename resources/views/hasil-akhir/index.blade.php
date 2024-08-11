@@ -7,7 +7,10 @@
     <div class="col-md-12">
         <div class="card shadow border-0">
             <div class="card-body">
+            <div class="d-flex justify-content-between">
                 <h5>Ranking</h5>
+                <a href="{{ route('hasil-akhir.pdf') }}" class="btn btn-info  mb-3">Cetak PDF</a>
+            </div>
                 <table class="table table-striped">
                     <thead>
                         <tr>

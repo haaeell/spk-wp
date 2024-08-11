@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Alternatif;
+use App\Models\Kriteria;
+use App\Models\Pasien;
 use Illuminate\Http\Request;
 
 class HomeController extends Controller
@@ -23,6 +26,9 @@ class HomeController extends Controller
      */
     public function index()
     {
-        return view('home');
+        $jumlahPasien = Pasien::count();
+        $jumlahPoli = Alternatif::count();
+        $jumlahKriteria = Kriteria::count();
+        return view('home', compact('jumlahPasien', 'jumlahPoli', 'jumlahKriteria'));
     }
 }

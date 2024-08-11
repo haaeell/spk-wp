@@ -39,9 +39,6 @@ class PenilaianController extends Controller
     }
 
 
-
-
-
     public function pasienindex()
     {
         $userId = auth()->id();
@@ -117,6 +114,9 @@ class PenilaianController extends Controller
      */
     public function destroy(string $id)
     {
-        //
+        Penilaian::where('alternatif_id', $id)->delete();
+        
+        return redirect()->back()->with('success', 'Semua penilaian untuk alternatif ini berhasil dihapus.');
+    
     }
 }

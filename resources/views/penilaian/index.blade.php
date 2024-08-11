@@ -17,7 +17,7 @@
                         <table class="table table-bordered mt-3">
                             <thead>
                                 <tr>
-                                    <th>Kode Alternatif</th>
+                                    <th>Nama Alternatif</th>
                                     @foreach ($kriterias as $kriteria)
                                         <th>{{ $kriteria->kode }}</th>
                                     @endforeach
@@ -27,7 +27,7 @@
                             <tbody>
                                 @foreach ($alternatifs as $alternatif)
                                     <tr>
-                                        <td>{{ $alternatif->kode }}</td>
+                                        <td>{{ $alternatif->nama }}</td>
                                         @foreach ($kriterias as $kriteria)
                                             @php
                                                 $nilai = $rataRataPenilaian[$alternatif->id][$kriteria->id] ?? 0;
@@ -38,7 +38,7 @@
                                            <form action="{{ route('penilaian.destroy', $alternatif->id) }}" method="POST">
                                                @csrf
                                                @method('DELETE')
-                                               <button type="submit" class="btn btn-danger">Delete</button>
+                                               <button type="submit" onclick="return confirm('Apakah anda yakin?')" class="btn btn-danger">Delete</button>
                                            </form>
                                         </td>
                                     </tr>

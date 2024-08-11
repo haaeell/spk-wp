@@ -4,7 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\Alternatif;
 use App\Models\Kriteria;
+use App\Models\Penilaian;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\DB;
 
 class PerhitunganController extends Controller
 {
@@ -12,8 +15,6 @@ class PerhitunganController extends Controller
     {
         $kriteria = Kriteria::all();
         $alternatif = $this->getAlternatifData();
-        dd($alternatif);
-
         $vectorS = $this->calculateVectorS($kriteria, $alternatif);
         $vectorV = $this->calculateVectorV($vectorS);
 
@@ -37,29 +38,48 @@ class PerhitunganController extends Controller
 
     private function getAlternatifData($useNameAsKey = false)
     {
-        return Alternatif::with('penilaians')->get()->mapWithKeys(function ($item) use ($useNameAsKey) {
-            $key = $useNameAsKey ? $item['nama'] : $item['kode'];
-            return [$key => $item->penilaians->pluck('nilai')->toArray()];
+        $penilaians = Penilaian::select('alternatif_id', 'kriteria_id', DB::raw('AVG(nilai) as rataRataNilai'))
+            ->groupBy('alternatif_id', 'kriteria_id')
+            ->get();
+
+        $rataRataPenilaian = [];
+        foreach ($penilaians as $penilaian) {
+            $rataRataPenilaian[$penilaian->alternatif_id][$penilaian->kriteria_id] = number_format($penilaian->rataRataNilai, 0, '', '');
+        }
+
+        $alternatifs = Alternatif::all();
+
+        return $alternatifs->mapWithKeys(function ($item) use ($rataRataPenilaian, $useNameAsKey) {
+            $key = $useNameAsKey ? $item->nama : $item->kode;
+            $nilai = $rataRataPenilaian[$item->id] ?? [];
+            return [$key => $nilai];
         })->toArray();
     }
+
 
     private function calculateVectorS($kriteria, $alternatif)
     {
         $vectorS = [];
-        $jumlahVectorS = 0;
 
         foreach ($alternatif as $key => $nilai) {
-            $S = array_reduce($nilai, function ($carry, $n) use ($kriteria, $key) {
-                $index = array_search($key, array_column($kriteria->toArray(), 'kode'));
-                return $carry * pow($n, $kriteria[$index]['bobot']);
-            }, 1);
+            $S = 1;
+
+            foreach ($nilai as $index => $n) {
+                $kriteriaIndex = $index - 1; 
+                if (isset($kriteria[$kriteriaIndex])) {
+                    $S *= pow($n, $kriteria[$kriteriaIndex]['bobot']);
+                } else {
+                    dd("Undefined array key", $kriteriaIndex, $kriteria, $nilai);
+                }
+            }
 
             $vectorS[$key] = $S;
-            $jumlahVectorS += $S;
         }
 
         return $vectorS;
     }
+
+
 
     private function calculateVectorV($vectorS)
     {
@@ -75,4 +95,18 @@ class PerhitunganController extends Controller
         arsort($vectorV);
         return array_keys($vectorV);
     }
+
+    public function cetakPdf()
+{
+    $kriteria = Kriteria::all();
+    $alternatif = $this->getAlternatifData(true);
+
+    $vectorS = $this->calculateVectorS($kriteria, $alternatif);
+    $vectorV = $this->calculateVectorV($vectorS);
+
+    $ranking = $this->getRanking($vectorV);
+
+    $pdf = Pdf::loadView('perhitungan.pdf', compact('kriteria', 'alternatif', 'vectorS', 'vectorV', 'ranking'));
+    return $pdf->download('hasil-akhir.pdf');
+}
 }

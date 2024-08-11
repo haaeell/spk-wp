@@ -7,8 +7,7 @@
     <div class="col-md-12">
         <div class="card shadow border-0">
             <div class="card-body">
-                <h4 class="card-title">Data Perhitungan</h4>
-                <h5>Alternatif dan Penilaian</h5>
+                <h4 class="card-title">Data Perhitungan </h4>
                 <table class="table table-striped">
                     <thead>
                         <tr>
