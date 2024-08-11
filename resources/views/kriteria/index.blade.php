@@ -13,6 +13,12 @@
                             </div>
                         @endif
 
+                        @if ($message = Session::get('error'))
+                            <div class="alert alert-danger">
+                                <p>{{ $message }}</p>
+                            </div>
+                        @endif
+
                         <!-- Button untuk memunculkan modal create -->
                         <button type="button" class="btn btn-success" data-toggle="modal" data-target="#createModal">
                             Tambah kriteria
@@ -21,7 +27,6 @@
                         <!-- Table kriteria -->
                         <table class="table table-bordered mt-3">
                             <tr>
-                                <th>No</th>
                                 <th>Kode</th>
                                 <th>Nama</th>
                                 <th>Bobot</th>
@@ -30,16 +35,11 @@
                             </tr>
                             @foreach ($kriterias as $kriteria)
                                 <tr>
-                                    <td>{{ $loop->iteration }}</td>
                                     <td>{{ $kriteria->kode }}</td>
                                     <td>{{ $kriteria->nama }}</td>
-                                    <td>{{ $kriteria->bobot }}</td>
+                                    <td>{{ $kriteria->bobot * 100  }}%</td>
                                     <td>{{ $kriteria->cost_benefit }}</td>
                                     <td>
-                                        <button type="button" class="btn btn-info" data-toggle="modal"
-                                            data-target="#showModal{{ $kriteria->id }}">
-                                            Show
-                                        </button>
                                         <button type="button" class="btn btn-primary" data-toggle="modal"
                                             data-target="#editModal{{ $kriteria->id }}">
                                             Edit
@@ -50,30 +50,6 @@
                                         </button>
                                     </td>
                                 </tr>
-
-                                <!-- Modal Show -->
-                                <div class="modal fade" id="showModal{{ $kriteria->id }}" tabindex="-1"
-                                    aria-labelledby="showModalLabel" aria-hidden="true">
-                                    <div class="modal-dialog">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title" id="showModalLabel">Detail kriteria</h5>
-                                                <button type="button" class="close" data-dismiss="modal"
-                                                    aria-label="Close">
-                                                    <span aria-hidden="true">&times;</span>
-                                                </button>
-                                            </div>
-                                            <div class="modal-body">
-                                                <p>Kode: {{ $kriteria->kode }}</p>
-                                                <p>Nama: {{ $kriteria->nama }}</p>
-                                            </div>
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary"
-                                                    data-dismiss="modal">Close</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
 
                                 <!-- Modal Edit -->
                                 <div class="modal fade" id="editModal{{ $kriteria->id }}" tabindex="-1"
@@ -104,7 +80,7 @@
                                                     <div class="mb-3">
                                                         <label for="bobot" class="form-label">Bobot</label>
                                                         <input type="number" name="bobot" class="form-control"
-                                                            id="bobot" value="{{ $kriteria->bobot }}">
+                                                            id="bobot" value="{{ $kriteria->bobot * 100 }}" step="0.01">
                                                     </div>
                                                     <div class="mb-3">
                                                         <label for="cost_benefit" class="form-label">Cost/Benefit</label>
@@ -127,7 +103,6 @@
                                         </div>
                                     </div>
                                 </div>
-
 
                                 <!-- Modal Delete -->
                                 <div class="modal fade" id="deleteModal{{ $kriteria->id }}" tabindex="-1"
@@ -166,13 +141,12 @@
         </div>
     </div>
 
-
     <!-- Modal Create -->
     <div class="modal fade" id="createModal" tabindex="-1" aria-labelledby="createModalLabel" aria-hidden="true">
         <div class="modal-dialog">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title" id="createModalLabel">Tambah kriteria</h5>
+                    <h5 class="modal-title" id="createModalLabel">Tambah Kriteria</h5>
                     <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                         <span aria-hidden="true">&times;</span>
                     </button>
@@ -182,22 +156,19 @@
                     <div class="modal-body">
                         <div class="mb-3">
                             <label for="kode" class="form-label">Kode</label>
-                            <input type="text" name="kode" class="form-control" id="kode"
-                                placeholder="Masukkan kode">
+                            <input type="text" name="kode" class="form-control" id="kode" required>
                         </div>
                         <div class="mb-3">
                             <label for="nama" class="form-label">Nama</label>
-                            <input type="text" name="nama" class="form-control" id="nama"
-                                placeholder="Masukkan nama">
+                            <input type="text" name="nama" class="form-control" id="nama" required>
                         </div>
                         <div class="mb-3">
                             <label for="bobot" class="form-label">Bobot</label>
-                            <input type="number" name="bobot" class="form-control" id="bobot"
-                                placeholder="Masukkan bobot">
+                            <input type="number" name="bobot" class="form-control" id="bobot" required step="0.01" min="0" max="100">
                         </div>
                         <div class="mb-3">
                             <label for="cost_benefit" class="form-label">Cost/Benefit</label>
-                            <select name="cost_benefit" id="cost_benefit" class="form-control">
+                            <select name="cost_benefit" id="cost_benefit" class="form-control" required>
                                 <option value="cost">Cost</option>
                                 <option value="benefit">Benefit</option>
                             </select>
@@ -205,11 +176,10 @@
                     </div>
                     <div class="modal-footer">
                         <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
-                        <button type="submit" class="btn btn-primary">Submit</button>
+                        <button type="submit" class="btn btn-primary">Save</button>
                     </div>
                 </form>
             </div>
         </div>
     </div>
-
 @endsection

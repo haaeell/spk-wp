@@ -21,21 +21,15 @@
                         <!-- Table Alternatif -->
                         <table class="table table-bordered mt-3">
                             <tr>
-                                <th>No</th>
                                 <th>Kode</th>
                                 <th>Nama</th>
                                 <th width="280px">Aksi</th>
                             </tr>
                             @foreach ($alternatifs as $alternatif)
                                 <tr>
-                                    <td>{{ $loop->iteration }}</td>
                                     <td>{{ $alternatif->kode }}</td>
                                     <td>{{ $alternatif->nama }}</td>
                                     <td>
-                                        <button type="button" class="btn btn-info" data-toggle="modal"
-                                            data-target="#showModal{{ $alternatif->id }}">
-                                            Show
-                                        </button>
                                         <button type="button" class="btn btn-primary" data-toggle="modal"
                                             data-target="#editModal{{ $alternatif->id }}">
                                             Edit
@@ -46,29 +40,6 @@
                                         </button>
                                     </td>
                                 </tr>
-
-                                <!-- Modal Show -->
-                                <div class="modal fade" id="showModal{{ $alternatif->id }}" tabindex="-1"
-                                    aria-labelledby="showModalLabel" aria-hidden="true">
-                                    <div class="modal-dialog">
-                                        <div class="modal-content">
-                                            <div class="modal-header">
-                                                <h5 class="modal-title" id="showModalLabel">Detail Alternatif</h5>
-                                                <button type="button" class="close" data-dismiss="modal" aria-label="Close">
-                                                    <span aria-hidden="true">&times;</span>
-                                                </button>
-                                            </div>
-                                            <div class="modal-body">
-                                                <p>Kode: {{ $alternatif->kode }}</p>
-                                                <p>Nama: {{ $alternatif->nama }}</p>
-                                            </div>
-                                            <div class="modal-footer">
-                                                <button type="button" class="btn btn-secondary"
-                                                    data-dismiss="modal">Close</button>
-                                            </div>
-                                        </div>
-                                    </div>
-                                </div>
 
                                 <!-- Modal Edit -->
                                 <div class="modal fade" id="editModal{{ $alternatif->id }}" tabindex="-1"

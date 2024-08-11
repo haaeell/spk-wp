@@ -15,25 +15,38 @@ class PerhitunganController extends Controller
     {
         $kriteria = Kriteria::all();
         $alternatif = $this->getAlternatifData();
+        $errorMessage = $this->checkAlternatives($alternatif, $kriteria);
         $vectorS = $this->calculateVectorS($kriteria, $alternatif);
         $vectorV = $this->calculateVectorV($vectorS);
 
         $ranking = $this->getRanking($vectorV);
 
-        return view('perhitungan.index', compact('kriteria', 'alternatif', 'vectorS', 'vectorV', 'ranking'));
+        return view('perhitungan.index', compact('kriteria', 'alternatif', 'vectorS', 'vectorV', 'ranking', 'errorMessage'));
     }
-
     public function hasilAkhir()
     {
         $kriteria = Kriteria::all();
         $alternatif = $this->getAlternatifData(true);
-
+        $errorMessage = $this->checkAlternatives($alternatif, $kriteria);
         $vectorS = $this->calculateVectorS($kriteria, $alternatif);
         $vectorV = $this->calculateVectorV($vectorS);
 
         $ranking = $this->getRanking($vectorV);
 
-        return view('hasil-akhir.index', compact('kriteria', 'alternatif', 'vectorS', 'vectorV', 'ranking'));
+        return view('hasil-akhir.index', compact('kriteria', 'alternatif', 'vectorS', 'vectorV', 'ranking', 'errorMessage'));
+    }
+
+    private function checkAlternatives($alternatif, $kriteria)
+    {
+        $emptyAlternatives = array_filter($alternatif, function ($items) {
+            return empty($items);
+        });
+
+        if ($kriteria->isEmpty() || empty($alternatif) || !empty($emptyAlternatives)) {
+            return 'Perhitungan tidak dapat dilanjutkan. Pastikan semua alternatif telah terisi dengan nilai yang valid.';
+        }
+
+        return null;
     }
 
     private function getAlternatifData($useNameAsKey = false)
@@ -65,7 +78,7 @@ class PerhitunganController extends Controller
             $S = 1;
 
             foreach ($nilai as $index => $n) {
-                $kriteriaIndex = $index - 1; 
+                $kriteriaIndex = $index - 1;
                 if (isset($kriteria[$kriteriaIndex])) {
                     $S *= pow($n, $kriteria[$kriteriaIndex]['bobot']);
                 } else {
@@ -97,16 +110,16 @@ class PerhitunganController extends Controller
     }
 
     public function cetakPdf()
-{
-    $kriteria = Kriteria::all();
-    $alternatif = $this->getAlternatifData(true);
+    {
+        $kriteria = Kriteria::all();
+        $alternatif = $this->getAlternatifData(true);
 
-    $vectorS = $this->calculateVectorS($kriteria, $alternatif);
-    $vectorV = $this->calculateVectorV($vectorS);
+        $vectorS = $this->calculateVectorS($kriteria, $alternatif);
+        $vectorV = $this->calculateVectorV($vectorS);
 
-    $ranking = $this->getRanking($vectorV);
+        $ranking = $this->getRanking($vectorV);
 
-    $pdf = Pdf::loadView('perhitungan.pdf', compact('kriteria', 'alternatif', 'vectorS', 'vectorV', 'ranking'));
-    return $pdf->download('hasil-akhir.pdf');
-}
+        $pdf = Pdf::loadView('perhitungan.pdf', compact('kriteria', 'alternatif', 'vectorS', 'vectorV', 'ranking'));
+        return $pdf->download('hasil-akhir.pdf');
+    }
 }

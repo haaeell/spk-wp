@@ -37,11 +37,12 @@ class KriteriaController extends Controller
         'cost_benefit' => 'required|in:cost,benefit', // Validasi cost_benefit hanya bisa cost atau benefit
     ]);
 
+    $bobot = $request->bobot / 100;
     // Buat entri kriteria baru
     Kriteria::create([
         'kode' => $request->kode,
         'nama' => $request->nama,
-        'bobot' => $request->bobot,
+        'bobot' => $bobot,
         'cost_benefit' => $request->cost_benefit,
     ]);
 
@@ -82,11 +83,12 @@ class KriteriaController extends Controller
         // Temukan entri kriteria
         $kriteria = Kriteria::findOrFail($id);
     
+        $bobot = $request->bobot / 100;
         // Perbarui entri kriteria
         $kriteria->update([
             'kode' => $request->kode,
             'nama' => $request->nama,
-            'bobot' => $request->bobot,
+            'bobot' => $bobot,
             'cost_benefit' => $request->cost_benefit,
         ]);
     
