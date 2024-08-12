@@ -23,7 +23,7 @@
                             <thead>
                                 <tr>
                                     <th>Rank</th>
-                                    <th>Kode Alternatif</th>
+                                    <th>Nama Poli</th>
                                     <th>Nilai Akhir</th>
                                 </tr>
                             </thead>

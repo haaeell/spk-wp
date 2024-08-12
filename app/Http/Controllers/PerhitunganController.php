@@ -71,26 +71,30 @@ class PerhitunganController extends Controller
 
 
     private function calculateVectorS($kriteria, $alternatif)
-    {
-        $vectorS = [];
+{
+    // Convert the collection to an associative array with the key as 'id'
+    $kriteriaArray = $kriteria->keyBy('id')->toArray();
 
-        foreach ($alternatif as $key => $nilai) {
-            $S = 1;
+    $vectorS = [];
 
-            foreach ($nilai as $index => $n) {
-                $kriteriaIndex = $index - 1;
-                if (isset($kriteria[$kriteriaIndex])) {
-                    $S *= pow($n, $kriteria[$kriteriaIndex]['bobot']);
-                } else {
-                    dd("Undefined array key", $kriteriaIndex, $kriteria, $nilai);
-                }
+    foreach ($alternatif as $key => $nilai) {
+        $S = 1;
+
+        foreach ($nilai as $kriteriaId => $n) {
+            if (array_key_exists($kriteriaId, $kriteriaArray)) {
+                $kriteriaItem = $kriteriaArray[$kriteriaId];
+                $S *= pow($n, $kriteriaItem['bobot']);
+            } else {
+                dd("Undefined array key", $kriteriaId, $kriteriaArray, $nilai);
             }
-
-            $vectorS[$key] = $S;
         }
 
-        return $vectorS;
+        $vectorS[$key] = $S;
     }
+
+    return $vectorS;
+}
+
 
 
 

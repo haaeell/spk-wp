@@ -116,23 +116,31 @@
                                     </p>
                                 </a>
                             </li>
-                            <li class="nav-item">
-                                <a href="{{ route('perhitungan.hasilAkhir')}}" class="nav-link {{ request()->is('hasil-akhir*') ? 'active' : '' }}">
-                                    <i class="nav-icon fas fa-chart-line"></i>
-                                    <p>
-                                        Hasil Akhir
-                                    </p>
-                                </a>
-                            </li>
-                            <li class="nav-item">
-                                <a href="{{ route('user.index')}}" class="nav-link {{ request()->is('users*') ? 'active' : '' }}">
-                                    <i class="nav-icon fas fa-users"></i>
-                                    <p>
-                                        Data Users
-                                    </p>
-                                </a>
-                            </li>
                           
+                        @endif
+
+                        @if (Auth::user()->role == 'aadmin' || Auth::user()->role == 'direktur')
+                        <li class="nav-item">
+                            <a href="{{ route('perhitungan.hasilAkhir')}}" class="nav-link {{ request()->is('hasil-akhir*') ? 'active' : '' }}">
+                                <i class="nav-icon fas fa-chart-line"></i>
+                                <p>
+                                    Hasil Akhir
+                                </p>
+                            </a>
+                        </li>
+                        @endif
+
+                        @if (Auth::user()->role == 'admin')
+                             
+                        <li class="nav-item">
+                            <a href="{{ route('user.index')}}" class="nav-link {{ request()->is('users*') ? 'active' : '' }}">
+                                <i class="nav-icon fas fa-users"></i>
+                                <p>
+                                    Data Users
+                                </p>
+                            </a>
+                        </li>
+                      
                         @endif
 
                         @if (Auth::user()->role == 'pasien')
