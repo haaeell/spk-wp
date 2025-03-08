@@ -119,7 +119,7 @@
                           
                         @endif
 
-                        @if (Auth::user()->role == 'aadmin' || Auth::user()->role == 'direktur')
+                        @if (Auth::user()->role == 'admin' || Auth::user()->role == 'direktur')
                         <li class="nav-item">
                             <a href="{{ route('perhitungan.hasilAkhir')}}" class="nav-link {{ request()->is('hasil-akhir*') ? 'active' : '' }}">
                                 <i class="nav-icon fas fa-chart-line"></i>

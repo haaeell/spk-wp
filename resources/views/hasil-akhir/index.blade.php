@@ -1,6 +1,6 @@
 @extends('layouts.dashboard')
 
-@section('judul', 'Data Hasil Akhir')
+@section('judul', 'Keputusan Akhir')
 
 @section('content')
     <div class="row">
@@ -16,15 +16,17 @@
                         </div>
                     @else
                         <div class="d-flex justify-content-between">
-                            <h5>Ranking</h5>
-                            <a href="{{ route('hasil-akhir.pdf') }}" class="btn btn-info  mb-3">Cetak PDF</a>
+                            <h5>Keputusan Akhir</h5>
+                            <a href="{{ route('hasil-akhir.pdf') }}" class="btn btn-info mb-3">Cetak PDF</a>
                         </div>
+                        <p>Keputusan ini didasarkan pada nilai akhir yang diperoleh dari proses perhitungan. Nilai tertinggi menempati peringkat pertama karena memiliki faktor-faktor yang lebih unggul dibandingkan lainnya.</p>
                         <table class="table table-striped">
                             <thead>
                                 <tr>
                                     <th>Rank</th>
                                     <th>Nama Poli</th>
                                     <th>Nilai Akhir</th>
+                                    <th>Alasan Pemilihan</th>
                                 </tr>
                             </thead>
                             <tbody>
@@ -33,6 +35,13 @@
                                         <td>{{ $index + 1 }}</td>
                                         <td>{{ $kode }}</td>
                                         <td>{{ number_format($vectorV[$kode], 4) }}</td>
+                                        <td>
+                                            @if($index == 0)
+                                                Poli ini memiliki nilai tertinggi karena memenuhi semua kriteria utama secara optimal.
+                                            @else
+                                                Poli ini memiliki nilai lebih rendah dibandingkan yang di atasnya karena faktor tertentu.
+                                            @endif
+                                        </td>
                                     </tr>
                                 @endforeach
                             </tbody>
